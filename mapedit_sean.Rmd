@@ -1,0 +1,49 @@
+---
+title: "mapedit_sean"
+author: "Sean McKnight"
+date: "2/4/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(sf)
+library(mapedit)
+library(leaflet)
+```
+
+Load seaweed data
+
+```{r}
+seaweed <- read_sf("data/seaweed_range_lines.shp")
+```
+
+```{r}
+seaweed_lines <- editMap(leaflet() %>%  addTiles())
+sw_lines <- seaweed_lines$finished
+
+mapview(sw_lines)
+
+#save a shapefile
+write_sf(sw_lines, "data/new_seaweed.shp")
+```
+
+Update the shp
+
+```{r}
+new_lines <- mapview(seaweed) %>% 
+  editMap("seaweed")
+```
+
+# not sure why this isnt' working. I cant see the information I saved in the previous step.
+```{r}
+s <- new_line$all
+
+mapview(s)
+```
+
+
+

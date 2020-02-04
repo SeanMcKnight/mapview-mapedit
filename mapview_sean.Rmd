@@ -1,0 +1,87 @@
+---
+title: "mapview_sean"
+author: "Sean McKnight"
+date: "2/4/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(sf)
+library(mapview)
+library(raster)
+
+```
+
+# Load point data
+
+```{r}
+sb_tweets <- read_sf("data/sb-tweets.shp")
+
+head(sb_tweets)
+mapview(sb_tweets)
+```
+
+Play with some color
+
+```{r}
+mapview(sb_tweets, zcol = "usr_typ")
+```
+
+Can also map continuous data
+```{r}
+mapview(sb_tweets, zcol = "Day")
+```
+
+# Polygon data
+
+```{r}
+#cpad = california protected area database
+
+cpad <- read_sf("data/ca_protected_areas.shp")
+
+#zcol allows you to symbolize based on a field, 
+# burst allows you to separate into separate layers
+mapview(cpad, zcol = "ACCESS_TYP", burst = TRUE) 
+```
+
+
+Apply your own colors using `col.regions`
+```{r}
+# mapview(cpad, zcol = "ACCESS_TYP", col.regions = c("purple","yellow","darkgreen","orange"))
+
+mapview(cpad, zcol = "ACCESS_TYP", col.regions = mapviewPalette("mapviewSpectralColors"))
+```
+
+
+# Combine Layers
+
+```{r}
+mapview(cpad, zcol = "ACCESS_TYP", layer.name = "CPAD Access") +
+  mapview(sb_tweets, zcol = "usr_typ", layer.name = "SB Tweets")
+```
+
+
+# Raster Data
+
+```{r}
+catch <- raster("data/catch_2015.tif")
+
+mapview(catch)
+```
+
+# Save
+```{r}
+sb_map <- mapview(cpad, zcol = "ACCESS_TYP", layer.name = "CPAD Access") +
+  mapview(sb_tweets, zcol = "usr_typ", layer.name = "SB Tweets")
+
+#save using `mapshot`
+
+mapshot(sb_map, file = "sb_tweet_map.html")
+```
+
+
+
